@@ -37,7 +37,7 @@ class FullPiano extends Component {
 		super(props);
 		this.midiNotes=[];
 		this.state = {
-			selectedInstrument: 192
+			selectedInstrument: 124
 			,status:'?'
 		};
 	}

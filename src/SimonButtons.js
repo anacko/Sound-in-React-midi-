@@ -1,12 +1,11 @@
 import { Component } from 'react';
 import MIDISounds from 'midi-sounds-react';
 
-
 class SimonButtons extends Component {
 	constructor(props) {
 		super(props);
 		this.midiNotes=[];
-		this.state = { selectedInstrument: 124, echo: 0, status:'?'};
+		this.state = { selectedInstrument: 124, status:'?'};
 	}
 	componentDidMount() {
     this.envelopes=[];		
@@ -57,7 +56,7 @@ class SimonButtons extends Component {
 		this.setState({status:event.port.manufacturer + ' ' + event.port.name + ' ' + event.port.state});
 	}
 	requestMIDIAccessSuccess(midi){
-		console.log(midi);
+		//console.log(midi);
 		var inputs = midi.inputs.values();
 		for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
 			input.value.onmidimessage = this.midiOnMIDImessage.bind(this);
@@ -65,7 +64,7 @@ class SimonButtons extends Component {
 		midi.onstatechange = this.onMIDIOnStateChange.bind(this);
 	}
 	requestMIDIAccessFailure(e){
-		console.log('requestMIDIAccessFailure', e);
+		//console.log('requestMIDIAccessFailure', e);
 		this.setState({status:'MIDI Access Failure'});
 	}
 	startListening(){
@@ -89,8 +88,10 @@ class SimonButtons extends Component {
 					</tr>
 				</tbody>
 			</table>
-		<MIDISounds ref={(ref) => (this.midiSounds = ref)} appElementName="root" instruments={[this.state.selectedInstrument]} />	
-		  </div>
+		<div hidden>
+    <MIDISounds ref={(ref) => (this.midiSounds = ref)} appElementName="root" instruments={[this.state.selectedInstrument]} />	
+		</div>  
+      </div>
     );
   }
 }
