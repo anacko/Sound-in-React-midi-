@@ -6,22 +6,12 @@ class SimonButtons extends Component {
 	constructor(props) {
 		super(props);
 		this.midiNotes=[];
-		this.state = {
-			selectedInstrument: 124
-			,status:'?'
-		};
+		this.state = { selectedInstrument: 124, echo: 0, status:'?'};
 	}
 	componentDidMount() {
-		this.envelopes=[];				
+    this.envelopes=[];		
+    this.midiSounds.setEchoLevel(0);		
 		this.startListening();
-	}
-	onSelectInstrument(e){
-		var list=e.target;
-		let n = list.options[list.selectedIndex].getAttribute("value");
-		this.setState({
-			selectedInstrument: n
-		});
-		this.midiSounds.cacheInstrument(n);
 	}
 	createSelectItems() {
 		if (this.midiSounds) {
@@ -63,22 +53,6 @@ class SimonButtons extends Component {
 		}
 		return false;
 	}
-	midiOnMIDImessage(event){
-		var data = event.data;
-		var cmd = data[0] >> 4;
-		var channel = data[0] & 0xf;
-		var type = data[0] & 0xf0;
-		var pitch = data[1];
-		var velocity = data[2];
-		switch (type) {
-		case 144:
-			this.keyDown(pitch, velocity/127);
-			break;
-		case 128:
-			this.keyUp(pitch);
-			break;
-		}
-	}
 	onMIDIOnStateChange(event) {
 		this.setState({status:event.port.manufacturer + ' ' + event.port.name + ' ' + event.port.state});
 	}
@@ -107,7 +81,7 @@ class SimonButtons extends Component {
       <div>	
 		<table align="center">
 				<tbody>
-					<tr>	
+					<tr>
 						<td style={{"background-color": "yellow"}} onMouseDown={(e)=>this.keyDown(1+12*4)} onMouseUp={(e)=>this.keyUp(1+12*4)} onMouseOut={(e)=>this.keyUp(1+12*4)}>11</td>
 						<td style={{"background-color": "green"}} onMouseDown={(e)=>this.keyDown(4+12*3)} onMouseUp={(e)=>this.keyUp(4+12*3)} onMouseOut={(e)=>this.keyUp(4+12*3)}>30</td>
 						<td style={{"background-color": "red"}} onMouseDown={(e)=>this.keyDown(9+12*3)} onMouseUp={(e)=>this.keyUp(9+12*3)} onMouseOut={(e)=>this.keyUp(9+12*3)}>33</td>
@@ -116,7 +90,6 @@ class SimonButtons extends Component {
 				</tbody>
 			</table>
 		<MIDISounds ref={(ref) => (this.midiSounds = ref)} appElementName="root" instruments={[this.state.selectedInstrument]} />	
-		<hr/>
 		  </div>
     );
   }
